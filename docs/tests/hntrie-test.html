@@ -218,6 +218,24 @@ Promise.all([
             theTrieUnserialized.matchesJS.bind(theTrieUnserialized),
             r => r >= 0
         );
+
+        // Edge case test: single-label hostnames
+        stdout('\xA0');
+        stdout('Testing edge case: single-label hostnames...');
+        const singleLabelTrie = hnBigTrieJS.fromIterable(['localhost', 'com'], 'addJS');
+        if ( singleLabelTrie.matchesJS('localhost') < 0 ) {
+            stdout('Failed: single-label hostname "localhost" not matched');
+        }
+        if ( singleLabelTrie.matchesJS('com') < 0 ) {
+            stdout('Failed: single-label hostname "com" not matched');
+        }
+        if ( singleLabelTrie.matchesJS('sub.localhost') < 0 ) {
+            stdout('Failed: subdomain of single-label hostname not matched');
+        }
+        if ( singleLabelTrie.matchesJS('notinset') >= 0 ) {
+            stdout('Failed: false positive on "notinset"');
+        }
+        stdout('Edge case test completed successfully');
     });
 });
 
